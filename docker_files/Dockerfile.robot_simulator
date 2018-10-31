@@ -1,0 +1,97 @@
+# This relies on an auto generated Dockerfile for gazebo:libgazebo9
+# generated from docker_images/create_gzclient_image.Dockerfile.em
+
+
+#!!!!!!!!!!!!!!!!!!!
+# Make sure you set the environment variable
+# CONFIG_NAME
+# before building this.
+#------------------------------------------
+
+
+
+FROM osrf/ros:kinetic-desktop-full
+
+# install gazebo packages
+RUN apt-get update 
+
+RUN apt-get install -y curl \
+	build-essential \
+    ros-kinetic-xacro \ 
+    git \
+    wget \
+    ros-kinetic-turtlebot3-description \
+    ros-kinetic-catkin \
+    iputils-ping
+
+
+#install the newest gazebo from osrf repositories
+RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+RUN wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add -
+RUN apt-get update
+RUN apt-get install -y gazebo9 libgazebo9-dev
+
+
+RUN apt-get install -y ros-kinetic-gazebo9*
+
+
+#-----------------------------
+# ros env variables
+ENV CATKIN_WS /root/catkin_ws
+ENV ROS_ROOT=/opt/ros/kinetic/share/ros
+ENV ROS_PACKAGE_PATH=/root/catkin_ws/src:/opt/ros/kinetic/share:/opt/ros/kinetic/stacks
+ENV PATH=/root/catkin_ws/devel/bin:/opt/ros/kinetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# ENV ROSLISP_PACKAGE_DIRECTORIES=/root/catkin_ws/devel/share/common-lisp
+ENV ROS_DISTRO=kinetic
+ENV PYTHONPATH=/root/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/kinetic/lib/python2.7/dist-packages
+ENV PKG_CONFIG_PATH=/root/catkin_ws/devel/lib/pkgconfig:/root/catkin_ws/devel/lib/x86_64-linux-gnu/pkgconfig:/opt/ros/kinetic/lib/x86_64-linux-gnu/pkgconfig:/opt/ros/kinetic/lib/pkgconfig
+ENV CMAKE_PREFIX_PATH=/root/catkin_ws/devel:/opt/ros/kinetic
+#-----------------------------
+
+
+
+
+
+WORKDIR /root
+
+RUN mkdir -p $CATKIN_WS/src
+WORKDIR $CATKIN_WS
+RUN wstool init src
+
+#include also the new robot_state_publisher and https://github.com/ros/rosconsole_bridge.git
+WORKDIR $CATKIN_WS/src
+RUN git clone https://github.com/ros/robot_state_publisher.git && cd robot_state_publisher && git checkout kinetic-devel
+
+
+
+
+#setup the  simulator 
+ADD [ "./robot_simulator", "$CATKIN_WS/src/robot_simulator" ]
+
+
+#RUN echo "source /opt/ros/kinetic/setup.bash" >> /etc/bash.bashrc
+
+
+WORKDIR $CATKIN_WS
+
+RUN cat /root/catkin_ws/src/robot_simulator/package.xml 
+RUN echo "curr dir: $(pwd)"
+
+RUN catkin_make install --cmake-args -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic/ -DCMAKE_BUILD_TYPE=Release
+
+
+
+RUN chmod +x $CATKIN_WS/devel/setup.bash && \
+    bash -c "source $CATKIN_WS/devel/setup.bash"
+
+
+
+WORKDIR $CATKIN_WS
+
+RUN echo "/bin/bash -c 'source $CATKIN_WS/devel/setup.bash'" >> /etc/bash.bashrc
+RUN echo "/bin/bash -c 'source /usr/share/gazebo-9/setup.sh'" >> /etc/bash.bashrc
+
+RUN echo "export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH:$CATKIN_WS/src/robot_simulator/worlds" >> /etc/bash.bashrc
+
+
+

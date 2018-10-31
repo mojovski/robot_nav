@@ -1,0 +1,101 @@
+version: '3.4'
+services:
+  
+  # cartographer_slam:
+  #   env_file:
+  #       - ./envs/local
+  #   image: cartographer_slam:latest
+  #   build:
+  #     context: .
+  #     network: host
+  #     dockerfile: docker_files/Dockerfile.cartographer_slam
+  #   container_name: cartographer_slam
+  #   network_mode: "host"
+  #   extra_hosts: #these are added to the /etc/hosts
+  #     - "${ROS_HOSTNAME}:${ROS_IP}"
+  #   volumes:
+  #     # overwrite existing config files for parameter editing
+  #     - ./nav_node/configuration_files/:/opt/ros/kinetic/share/nav_node/configuration_files/
+  #     - ./nav_node/configuration_files/:/root/catkin_ws/src/nav_node/configuration_files/
+  #     - ./nav_node/launch/:/opt/ros/indigo/share/nav_node/launch/
+  #     #- map:/map
+  #     - ./maps/:/map
+  #     - ./logs/:/root/.ros/log/
+  #   environment:
+  #     - ROS_IP=${ROS_IP}
+  #     - ROS_MASTER_URI=${ROS_MASTER_URI}
+  #     - ROS_HOSTNAME=${ROS_HOSTNAME}
+  #   command: bash -c 'source /opt/cartographer_ros/setup.bash && roslaunch --wait nav_node cartographer_lidar_2d.launch'
+
+  ros_core:
+    env_file:
+        - ./envs/local
+    image: cloud:latest
+    build:
+      context: .
+      network: host
+      dockerfile: docker_files/Dockerfile.cloud_simple
+    container_name: ros_core
+    network_mode: "host"
+    volumes:
+      - ./nav_node/:/root/catkin_ws/src/nav_node/
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    environment:
+      - "ROS_IP=${ROS_IP}"
+      - "ROS_HOSTNAME=${ROS_HOSTNAME}"
+      - "ROS_MASTER_URI=${ROS_MASTER_URI}"
+    command: roscore
+    #roslaunch nav_node roscore.launch use_sim_time:=${ROS_USE_SIM_TIME}
+ 
+  #debug 
+  #docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -it --network=host -v `pwd`/ros_modules/nav_node/:/root/catkin_ws/src/nav_node move_base bash
+  # move_base:
+  #   env_file:
+  #       - ./envs/local
+  #   image: move_base:latest
+  #   build:
+  #     context: .
+  #     network: host
+  #     dockerfile: docker_files/Dockerfile.move_base
+  #   container_name: move_base
+  #   network_mode: "host"
+  #   extra_hosts: #these are added to the /etc/hosts
+  #     - "${ROS_HOSTNAME}:${ROS_IP}"
+  #   security_opt:
+  #     - seccomp:unconfined #in order to use gdb
+  #   cap_add:
+  #     - SYS_PTRACE #in order to use gdb
+  #   extra_hosts: #these are added to the /etc/hosts
+  #     - "${ROS_HOSTNAME}:${ROS_IP}"
+  #   volumes:
+  #     # overwrite existing config files for parameter editing
+  #     - ./nav_node/:/root/catkin_ws/src/nav_node/
+  #   environment:
+  #     - "ROS_IP=${ROS_IP}"
+  #     - "ROS_MASTER_URI=${ROS_MASTER_URI}"
+  #     - "ROS_HOSTNAME=${ROS_HOSTNAME}"
+  #   command: roslaunch --wait nav_node  move_base_tbe.launch
+
+
+  gazebo:
+    env_file:
+        - ./envs/local
+    image: robot_simulator:latest
+    build:
+        context: .
+        network: host
+        dockerfile: docker_files/Dockerfile.robot_simulator
+    container_name: robot_simulator
+    network_mode: "host"
+    volumes: #for hot editing of configuration files
+        - ./robot_simulator/launch/:/root/catkin_ws/src/robot_simulator/launch/
+        - ./robot_simulator/urdf/:/root/catkin_ws/src/robot_simulator/urdf/
+        - ./robot_simulator/worlds/:/root/catkin_ws/src/robot_simulator/worlds/
+        - ./robot_simulator/models/:/root/catkin_ws/src/robot_simulator/models/
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    command: "bash -c '. /root/catkin_ws/devel/setup.bash; source /usr/share/gazebo-9/setup.sh; \
+        roslaunch --wait robot_simulator turtle.launch world:=${WORLD_NAME} use_sim_time:=true gui:=false x_pos:=${START_X} y_pos:=${START_Y}'"
+
+

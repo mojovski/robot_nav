@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<robot name="turtlebot3_waffle_sim" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="laser_visual"  default="false"/>
+  <xacro:arg name="camera_visual" default="false"/>
+  <xacro:arg name="imu_visual"    default="false"/>
+
+  <xacro:arg name="r200_cam_rgb_px" default="0.005"/>
+  <xacro:arg name="r200_cam_rgb_py" default="0.018"/>
+  <xacro:arg name="r200_cam_rgb_pz" default="0.013"/>
+  <xacro:arg name="r200_cam_depth_offset" default="0.01"/>
+
+
+  <gazebo reference="caster_front_link">
+    <turnGravityOff>false</turnGravityOff>
+    <mu1 value="0.0"/>
+    <mu2 value="0.0"/>
+  </gazebo>
+
+  <gazebo reference="caster_back_link">
+    <turnGravityOff>false</turnGravityOff>
+    <mu1 value="0.0"/>
+    <mu2 value="0.0"/>
+  </gazebo>
+
+
+  <gazebo reference="front_right_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+   <gazebo reference="front_left_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+
+  <gazebo>
+    <!-- 
+      <plugin name="turtlebot3_waffle_controller" filename="libgazebo_ros_diff_drive.so">
+
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20</updateRate>
+      <legacyMode>false</legacyMode>
+      <leftJoint>front_left_wheel_joint</leftJoint>
+      <rightJoint>front_right_wheel_joint</rightJoint>
+      <wheelSeparation>0.39</wheelSeparation>
+      <wheelDiameter>0.15</wheelDiameter>
+      <torque>5</torque>
+      <commandTopic>/yocs_cmd_vel_mux/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_link</robotBaseFrame> 
+      <publishWheelTF>true</publishWheelTF>
+      <publishWheelJointState>true</publishWheelJointState>
+      <rosDebugLevel>na</rosDebugLevel>
+      <wheelAcceleration>5</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <odometrySource>world</odometrySource> 
+      <publishTf>1</publishTf>
+    </plugin>
+  -->
+
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller_front">
+      <rosDebugLevel>na</rosDebugLevel>
+      <legacyMode>false</legacyMode>
+      <publishWheelTF>True</publishWheelTF>
+      <publishTf>1</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20.0</updateRate>
+      <leftJoint>front_right_wheel_joint</leftJoint>
+      <rightJoint>front_left_wheel_joint</rightJoint>
+      <wheelSeparation>0.3</wheelSeparation>
+      <wheelDiameter>0.08</wheelDiameter>
+      <broadcastTF>1</broadcastTF>
+      <wheelTorque>30</wheelTorque>
+      <torque>30</torque>
+      <wheelAcceleration>1.8</wheelAcceleration>
+      <commandTopic>/yocs_cmd_vel_mux/cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <odometrySource>world</odometrySource> 
+</plugin>
+
+    <!--
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <bodyName>map</bodyName>
+      <topicName>odom</topicName>
+      <gaussianNoise>0.01</gaussianNoise>
+      <frameName>map</frameName>
+      <xyzOffsets>0 0 0</xyzOffsets>
+      <rpyOffsets>0 0 0</rpyOffsets>
+    </plugin>
+  -->
+
+
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+
+  
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name='imu_sensor' type='imu'>
+      <always_on>true</always_on>
+      <update_rate>115</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin name='imu_plugin' filename='libgazebo_ros_imu_sensor.so'>
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <frameName>imu_link</frameName>
+        <updateRateHZ>115.0</updateRateHZ> <!-- see source for correct names https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_plugins/src/gazebo_ros_imu_sensor.cpp -->
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+  <gazebo reference="base_laser_link">
+    <material>Gazebo/DarkGrey</material>
+    <sensor type="ray" name="lds_lfcd_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.570796</min_angle>
+            <max_angle>1.570796</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.20</min>
+          <max>28.5</max>
+          <resolution>0.25</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.002</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
+        <topicName>scan</topicName>
+        <frameName>base_laser_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!--
+  <gazebo reference="camera_link">
+    <sensor type="depth" name="realsense_R200">
+      <pose>$(arg r200_cam_rgb_px) $(arg r200_cam_rgb_py) $(arg r200_cam_rgb_pz) 0 0 0</pose>
+      <always_on>true</always_on>
+      <visualize>$(arg camera_visual)</visualize>
+      <camera>
+          <horizontal_fov>1.02974</horizontal_fov>
+          <image>
+              <width>1920</width>
+              <height>1080</height>
+              <format>R8G8B8</format>
+          </image>
+          <depth_camera></depth_camera>
+          <clip>
+              <near>0.02</near>
+              <far>300</far>
+          </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+        <pose>$(arg r200_cam_depth_offset) 0 0 0 0 0</pose>
+        <alwaysOn>true</alwaysOn>
+            <updateRate>30.0</updateRate>
+            <cameraName>camera</cameraName>
+            <frameName>camera_link</frameName>
+        <imageTopicName>rgb/image_raw</imageTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudCutoff>0.4</pointCloudCutoff>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+        <CxPrime>0.0</CxPrime>
+        <Cx>0.0</Cx>
+        <Cy>0.0</Cy>
+        <focalLength>0.0</focalLength>
+      </plugin>
+    </sensor>
+  </gazebo>
+-->
+
+</robot>
