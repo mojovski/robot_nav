@@ -4,6 +4,7 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="false"/>
   <arg name="model" default="waffle"/> 
+  <arg name="verbose" default="false"/>
   <arg name="x_pos" default="0.0"/>
   <arg name="y_pos" default="0.0"/>
   <arg name="z_pos" default="0.0"/>
@@ -18,7 +19,7 @@
        rendering, but instead enables recording). The arg definition has been left here to prevent breaking downstream
        launch files, but it does nothing. -->
     <arg name="headless" value="true"/>
-    <arg name="verbose" value="false"/>
+    <arg name="verbose" value="$(arg verbose)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="physics" value="ode"/> <!-- ode|bullet|dart|simbody -->
   </include>
