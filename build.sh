@@ -19,11 +19,11 @@ git clone https://github.com/googlecartographer/cartographer_ros.git
 cd ./cartographer_ros
 #git checkout extrapolation_into_past_issue
 docker build -t slam_kinetic -f Dockerfile.kinetic .
+cd ..
 
 
 
-
-cp envs/local .env
+cp ./envs/local .env
 source .env
 
 #build all within the docker-compose env

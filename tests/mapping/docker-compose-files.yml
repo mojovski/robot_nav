@@ -14,6 +14,6 @@ files-to-load:
 test:
   container_name: "ros_core"
   #cmd: "bash -c 'source /opt/ros/kinetic/setup.bash;rostopic echo target_pose'"
-  cmd: "bash -c 'source /opt/ros/kinetic/setup.bash;rosbag play -r 1.4 --clock /bags/osram_triangles_15_3_2019.bag'"
+  cmd: "bash -c 'source /opt/ros/kinetic/setup.bash;rosbag play -r 1.0 --clock /bags/two_times_forth_back.bag'"
   #cmd: "roslaunch --wait map_manager test_zones.launch"
   workdir: "/root/catkin_ws/"
