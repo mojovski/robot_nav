@@ -2,7 +2,9 @@
 FROM ros:kinetic
 
 # install all packages
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update -y 
+
+#&& apt-get upgrade -y
 
 RUN echo "uncache"
 RUN apt-get install -y ros-kinetic-catkin \ 

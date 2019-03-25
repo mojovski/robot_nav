@@ -26,6 +26,7 @@ services:
       - ../ros_modules/config_node/configuration_files/:/opt/ros/kinetic/share/config_node/configuration_files/
       - ../ros_modules/config_node/:/root/catkin_ws/src/config_node/
       - ../data/maps/:/map
+      - ../data/bags/:/bags
     environment:
       - ROS_IP=${ROS_IP}
       - ROS_MASTER_URI=${ROS_MASTER_URI}

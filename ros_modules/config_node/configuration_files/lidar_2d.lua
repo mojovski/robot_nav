@@ -54,25 +54,25 @@ TRAJECTORY_BUILDER.pure_localization_trimmer = {
 -- https://github.com/googlecartographer/cartographer_ros/blob/master/docs/source/algo_walkthrough.rst
 
 TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 1 --default 19
-TRAJECTORY_BUILDER_2D.min_range = 0.41
+TRAJECTORY_BUILDER_2D.min_range = 0.11
 TRAJECTORY_BUILDER_2D.submaps.grid_options_2d.resolution=0.05 -- default 0.05
 TRAJECTORY_BUILDER_2D.max_range = 10.
-TRAJECTORY_BUILDER_2D.missing_data_ray_length = 9.5
+TRAJECTORY_BUILDER_2D.missing_data_ray_length = 8.5
 TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.025 --default: 0.025
 TRAJECTORY_BUILDER_2D.use_imu_data = false -- imu is kaputt
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false
 TRAJECTORY_BUILDER_2D.adaptive_voxel_filter = {
-  max_length = 0.3,
-  min_num_points = 100,
-  max_range = 10.,
+  max_length = 0.5,
+  min_num_points = 200,
+  max_range = 50.,
 
 }
 
 
 -- see for default values: trajectory_builder_2d.lua#L41
 -- ignores a scan if the estimated motion (by the scan matcher) is below these values
-TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(1.2) --Threshold above which range data is inserted based on rotational motion.
-TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters=0.5 --default 0.2
+TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(3.2) --Threshold above which range data is inserted based on rotational motion.
+TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters=0.7 --default 0.2
 
 -- weight on the pose extrapolation as prior input to ceres scan matcher
 -- TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight=20. --default 20
@@ -83,7 +83,7 @@ TRAJECTORY_BUILDER_2D.ceres_scan_matcher.ceres_solver_options.num_threads=2
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.ceres_solver_options.max_num_iterations=100
 
 --store the world as tsdf
-TRAJECTORY_BUILDER_2D.submaps.num_range_data = 60 --100 see https://google-cartographer-ros.readthedocs.io/en/latest/tuning.html#correct-size-of-submaps
+TRAJECTORY_BUILDER_2D.submaps.num_range_data = 20 --60 --100 see https://google-cartographer-ros.readthedocs.io/en/latest/tuning.html#correct-size-of-submaps
 TRAJECTORY_BUILDER_2D.submaps.grid_options_2d.grid_type= "TSDF" -- default PROBABILITY_GRID
 --set this to the same type
 TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.range_data_inserter_type="TSDF_INSERTER_2D"
@@ -96,10 +96,10 @@ TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_in
 TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.insert_free_space=true
 
 -- if tsdf is used to store the submap data
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.truncation_distance=0.40 --default 0.3
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.truncation_distance=0.30 --default 0.3
 TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.update_free_space=true --default false
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.project_sdf_distance_to_scan_normal=true --true -- default false
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.maximum_weight=2 --default 10
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.project_sdf_distance_to_scan_normal=false --true -- default false
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.maximum_weight=8 --default 10
 -- pose graph options: 
 -- https://github.com/googlecartographer/cartographer/blob/master/configuration_files/pose_graph.lua
 
@@ -111,7 +111,7 @@ POSE_GRAPH.optimize_every_n_nodes = 3 --2.
 --   min_added_submaps_count = 5 --default 5
 -- }
 
-POSE_GRAPH.global_sampling_ratio = 0.003 -- 0.0 means loop closing is disabled
+POSE_GRAPH.global_sampling_ratio = 0.0 -- 0.0 means loop closing is disabled
 POSE_GRAPH.global_constraint_search_after_n_seconds=1e10 --e29 -- deactivated default 10
 
 
@@ -127,12 +127,12 @@ POSE_GRAPH.constraint_builder.fast_correlative_scan_matcher.angular_search_windo
 POSE_GRAPH.matcher_translation_weight=5e2 --default 5e2
 POSE_GRAPH.matcher_rotation_weight=1.6e3  -- default 1.6e3
 
-POSE_GRAPH.constraint_builder.sampling_ratio=0.03 -- 0.3 default
+POSE_GRAPH.constraint_builder.sampling_ratio=0.00 -- 0.3 default
 POSE_GRAPH.constraint_builder.max_constraint_distance=3.0 --default 15 Threshold for poses to be considered near a submap.
 POSE_GRAPH.constraint_builder.min_score=0.9 --default 0.55 Threshold for the scan match score below which a match is not considered. Low scores indicate that the scan and map do not look similar.
 
 -- loop closing
-POSE_GRAPH.constraint_builder.global_localization_min_score=0.74 -- default 0.65
+POSE_GRAPH.constraint_builder.global_localization_min_score=0.9974 -- default 0.65
 POSE_GRAPH.constraint_builder.loop_closure_translation_weight=1e9 --e7 -- default 1.1e4
 POSE_GRAPH.constraint_builder.loop_closure_rotation_weight=1e9 --default 1e5
 POSE_GRAPH.constraint_builder.log_matches=true
