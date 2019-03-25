@@ -1,0 +1,19 @@
+#note, that before all this starts, events.beforeStart.py is executed
+
+files-to-load:
+  # dirs are relative to the tests directory
+  - context-dir: "../"
+  - files-dir: "./docker-compose" #from the perspective of the context dir
+  - env-file: "./mapping/sim_playbag.env"
+  - files:
+    - ros_core.yml
+    - slam.yml
+
+
+#put this always as the last node
+test:
+  container_name: "ros_core"
+  #cmd: "bash -c 'source /opt/ros/kinetic/setup.bash;rostopic echo target_pose'"
+  cmd: "bash -c 'source /opt/ros/kinetic/setup.bash;rosbag play -r 1.4 --clock /bags/osram_triangles_15_3_2019.bag'"
+  #cmd: "roslaunch --wait map_manager test_zones.launch"
+  workdir: "/root/catkin_ws/"

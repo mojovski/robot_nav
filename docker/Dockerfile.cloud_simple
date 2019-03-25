@@ -3,3 +3,11 @@ FROM ros:kinetic
 
 # install all packages
 RUN apt-get update && apt-get upgrade -y
+
+ADD [ "ros_modules/config_node/", "$CATKIN_WS/src/config_node/" ]
+
+RUN ls $CATKIN_WS/src
+RUN ls /opt/ros/kinetic
+
+WORKDIR $CATKIN_WS
+RUN catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic/

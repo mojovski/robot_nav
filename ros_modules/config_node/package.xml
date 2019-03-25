@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>conf_node</name>
+  <name>config_node</name>
   <version>0.1.0</version>
   <description>
     Robot nav testing module

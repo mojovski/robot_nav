@@ -1,4 +1,4 @@
-# Robot Simulator via docker
+# Robot Navgiation and Simulator via docker
 
 ## Setup
 
@@ -14,6 +14,7 @@ sudo echo "172.17.0.1	local" >> /etc/hosts
 ### Install Requirements
 
 * git, docker, etc (if you dont have them yet...)
+
 * Docker compose:
 ```sh
 sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -26,9 +27,8 @@ docker-compose --version
 ## Build
 
 
-
 ```sh
-docker-compose -f docker-compose.yml build
+./build.sh
 ```
 
 
@@ -37,5 +37,5 @@ docker-compose -f docker-compose.yml build
 ```sh
 cp envs/local .env
 source .env
-docker-compose -f docker-compose.yml up
+docker-compose -f docker-compose/core.yml -f docker-compose/slam.yml up
 ```
