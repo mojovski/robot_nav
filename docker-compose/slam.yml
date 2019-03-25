@@ -1,0 +1,34 @@
+#call me as overriding file for docker-compose.yml
+# see https://docs.docker.com/compose/extends/#example-use-case
+# e.g.
+#docker-compose -f docker-compose.yml -f docker-compose-mapping.yml up 
+
+version: '3.4'
+
+services:
+
+  slam:
+    image: slam_cartographer:latest
+    build:
+      context: ..
+      network: host
+      dockerfile: docker/Dockerfile.slam
+    container_name: slam
+    network_mode: "host"
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    volumes:
+      # overwrite existing config files for "hot" parameter editing 
+      - ../ros_modules/config_node/configuration_files/:/opt/ros/kinetic/share/config_node/configuration_files/
+      - ../ros_modules/config_node/:/root/catkin_ws/src/config_node/
+      - ../data/maps/:/map
+    environment:
+      - ROS_IP=${ROS_IP}
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - ROS_HOSTNAME=${ROS_HOSTNAME}
+    #start the mapping by default
+    command: bash -c 'source /opt/cartographer_ros/setup.bash && sleep 5 && roslaunch --wait config_node lidar_2d_mapping.launch '

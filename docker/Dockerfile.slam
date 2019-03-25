@@ -1,0 +1,38 @@
+FROM slam_kinetic:latest
+
+#IMPORTANT: Priot to building this image, make sure you compiled cartograpehr using
+#the build.sh
+#script.
+
+ENV ROS_ROOT=/opt/ros/kinetic/share/ros
+ENV ROS_PACKAGE_PATH=/catkin_ws/install_isolated/share:/opt/ros/kinetic/share
+ENV PATH=/catkin_ws/install_isolated/bin:/root/catkin_ws/devel/bin:/opt/ros/kinetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV ROS_DISTRO=kinetic
+ENV PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages
+ENV PKG_CONFIG_PATH=/opt/ros/kinetic/lib/x86_64-linux-gnu/pkgconfig:/opt/ros/kinetic/lib/pkgconfig
+ENV CMAKE_PREFIX_PATH=/opt/ros/kinetic
+
+ENV CATKIN_WS /root/catkin_ws
+
+RUN apt-get update
+RUN apt-get install -y ros-kinetic-move-base-msgs ros-kinetic-catkin python-redis redis-server
+
+RUN update-rc.d redis-server enable
+
+RUN bash -c ". /opt/ros/kinetic/setup.bash"
+
+RUN mkdir -p $CATKIN_WS/src
+WORKDIR $CATKIN_WS/src
+
+ADD [ "ros_modules/config_node/", "$CATKIN_WS/src/config_node/" ]
+
+RUN ls $CATKIN_WS/src
+RUN ls /opt/ros/kinetic
+
+WORKDIR $CATKIN_WS
+RUN catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic/
+
+
+RUN ls $CATKIN_WS/src/
+
+RUN ls $CATKIN_WS/

@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+  
+  ros_core:
+    env_file:
+        - ./envs/local
+    image: cloud:latest
+    build:
+      context: .
+      network: host
+      dockerfile: docker/Dockerfile.cloud_simple
+    container_name: ros_core
+    network_mode: "host"
+    volumes:
+      - ./nav_node/:/root/catkin_ws/src/nav_node/
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    environment:
+      - "ROS_IP=${ROS_IP}"
+      - "ROS_HOSTNAME=${ROS_HOSTNAME}"
+      - "ROS_MASTER_URI=${ROS_MASTER_URI}"
+    command: roscore
+    #roslaunch nav_node roscore.launch use_sim_time:=${ROS_USE_SIM_TIME}
+ 

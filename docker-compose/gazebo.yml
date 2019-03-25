@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+
+  gazebo:
+    env_file:
+        - ./envs/local
+    image: robot_simulator:latest
+    build:
+        context: .
+        network: host
+        dockerfile: docker/Dockerfile.robot_simulator
+    container_name: robot_simulator
+    network_mode: "host"
+    volumes: #for hot editing of configuration files
+        - ./robot_simulator/launch/:/root/catkin_ws/src/robot_simulator/launch/
+        - ./robot_simulator/urdf/:/root/catkin_ws/src/robot_simulator/urdf/
+        - ./robot_simulator/worlds/:/root/catkin_ws/src/robot_simulator/worlds/
+        - ./robot_simulator/models/:/root/catkin_ws/src/robot_simulator/models/
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    command: "bash -c '. /root/catkin_ws/devel/setup.bash; source /usr/share/gazebo-9/setup.sh; \
+        roslaunch --wait robot_simulator turtle.launch world:=${WORLD_NAME} use_sim_time:=true gui:=false x_pos:=${START_X} y_pos:=${START_Y}'"
+
+

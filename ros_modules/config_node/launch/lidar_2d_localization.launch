@@ -1,0 +1,38 @@
+<!--
+this is a nearly a copy of cartographer_turtlebot/launch/demo_lidar_2d.launch
+-->
+
+
+<launch>
+  <env name="ROSCONSOLE_FORMAT" value="'[${severity}] [${time} ${node}] [${file}:${function}:${line}]: ${message}'" />
+
+  <arg name="config_name" default="lidar_2d_mapping"/> 
+  <arg name="map_filename" default="agvstate.pbstream"/>
+
+
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find config_node)/configuration_files
+          -configuration_basename $(arg config_name).lua
+          -load_state_filename /map/$(arg map_filename)"
+      output="screen">
+    <remap from="scan" to="/scan" />
+  </node>
+
+  <!--<node name="flat_world_imu_node" pkg="cartographer_turtlebot"
+      type="cartographer_flat_world_imu_node" output="screen">
+    <remap from="imu_in" to="/imu/data" />
+    <remap from="imu_out" to="/imu_flat" />
+  </node>
+-->
+
+
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node"  args="-resolution 0.05 -publish_period_sec 2.1">
+      <!-- see params in source http://docs.ros.org/indigo/api/cartographer_ros/html/occupancy__grid__node__main_8cc.html 
+      or call
+    rosrun cartographer_ros cartographer_occupancy_grid_node - -help
+    -->
+  </node>
+  
+</launch>
