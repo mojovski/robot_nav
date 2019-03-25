@@ -1,0 +1,8 @@
+<!--
+this is a nearly a copy of cartographer_turtlebot/launch/demo_lidar_2d.launch
+-->
+<launch>
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find config_node
+          )/configuration_files/vis.rviz" />  
+</launch>

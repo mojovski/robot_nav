@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+  
+  ros_core:
+    env_file:
+        - ../envs/local
+    image: cloud:latest
+    build:
+      context: ..
+      network: host
+      dockerfile: docker/Dockerfile.cloud_simple
+    container_name: ros_core
+    network_mode: "host"
+    volumes:
+      - ../ros_modules/config_node/:/root/catkin_ws/src/config_node/
+      - ../data/bags/:/bags
+    extra_hosts: #these are added to the /etc/hosts
+      - "${ROS_HOSTNAME}:${ROS_IP}"
+    environment:
+      - "ROS_IP=${ROS_IP}"
+      - "ROS_HOSTNAME=${ROS_HOSTNAME}"
+      - "ROS_MASTER_URI=${ROS_MASTER_URI}"
+    command: roslaunch config_node roscore.launch use_sim_time:=${ROS_USE_SIM_TIME}
+ 
