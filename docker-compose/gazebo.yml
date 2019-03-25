@@ -6,9 +6,9 @@ services:
         - ../envs/local
     image: robot_simulator:latest
     build:
-        context: .
+        context: ..
         network: host
-        dockerfile: ../docker/Dockerfile.robot_simulator
+        dockerfile: docker/Dockerfile.robot_simulator
     container_name: robot_simulator
     network_mode: "host"
     volumes: #for hot editing of configuration files

@@ -6,7 +6,7 @@ services:
         - ../envs/local
     image: cloud:latest
     build:
-      context: .
+      context: ..
       network: host
       dockerfile: docker/Dockerfile.cloud_simple
     container_name: ros_core

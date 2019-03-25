@@ -12,7 +12,7 @@ services:
     build:
       context: ..
       network: host
-      dockerfile: docker/Dockerfile.slam
+      dockerfile: ./docker/Dockerfile.slam
     container_name: slam
     network_mode: "host"
     security_opt:

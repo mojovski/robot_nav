@@ -4,6 +4,8 @@ FROM ros:kinetic
 # install all packages
 RUN apt-get update && apt-get upgrade -y
 
+ENV CATKIN_WS /root/catkin_ws
+
 ADD [ "ros_modules/config_node/", "$CATKIN_WS/src/config_node/" ]
 
 RUN ls $CATKIN_WS/src
