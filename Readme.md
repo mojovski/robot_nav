@@ -32,10 +32,24 @@ docker-compose --version
 ```
 
 
-## Run
+## Run a test
+
+```sh
+cd tests
+python run-test --testdir mapping
+```
+
+Then start rviz on your host machine (prefer to use predefined confg file):
+```sh
+rviz -d ./ros_modules/config_node/configuration_files/simple_vis.rviz
+```
+
+
+## Run the cartographer with your own bag
 
 ```sh
 cp envs/local .env
 source .env
 docker-compose -f docker-compose/core.yml -f docker-compose/slam.yml up
+rosbag play -r <filepath>
 ```

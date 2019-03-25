@@ -6,7 +6,7 @@ files-to-load:
   - files-dir: "./docker-compose" #from the perspective of the context dir
   - env-file: "./mapping/sim_playbag.env"
   - files:
-    - ros_core.yml
+    - core.yml
     - slam.yml
 
 

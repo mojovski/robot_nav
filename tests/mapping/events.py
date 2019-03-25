@@ -53,14 +53,14 @@ def onRun(container):
 	uptime=0.0
 
 	#remeber the first landmark
-	print("Waiting to remember the first landmark")
-	while uptime<221:
-		time.sleep(1)
-		uptime=getCurrentUptime()
+	#print("Waiting to check some stuff at time 221")
+	#while uptime<221:
+	#	time.sleep(1)
+	#	uptime=getCurrentUptime()
 	
 	#todo: check now at time 221
 
-	print("Exiting onRun")
+	#print("Exiting onRun")
 	return
 
 
