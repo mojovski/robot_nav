@@ -16,7 +16,7 @@ include "trajectory_builder.lua"
 options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
-  map_frame = "map", --    The ROS frame ID to use for publishing submaps, the parent frame of poses, usually
+  map_frame = "map", --    The ROS frame ID to use for publishing submaps, the parent frame of poses, usually Ã¢â‚¬Å“mapÃ¢â‚¬.
   tracking_frame = "imu_link", --imu_link works with gazebo. The ROS frame ID of the frame that is tracked by the SLAM algorithm. If an IMU is used, it should be at its position, although it might be rotated. A common choice is Ã¢â‚¬Å“imu_linkÃ¢â‚¬.
   published_frame = "odom", -- odom worked, base_link would be same as in the backpack_2d.lua example. The ROS frame ID to use as the child frame for publishing poses. For example Ã¢â‚¬Å“odomÃ¢â‚¬ if an Ã¢â‚¬Å“odomÃ¢â‚¬ frame is supplied by a different part of the system. In this case the pose of Ã¢â‚¬Å“odomÃ¢â‚¬ in the map_frame will be published. Otherwise, setting it to Ã¢â‚¬Å“base_linkÃ¢â‚¬ is likely appropriate.
   odom_frame = "odom_augmented", --Only used if provide_odom_frame is true. The frame between published_frame and map_frame to be used for publishing the (non-loop-closed) local SLAM result. Usually Ã¢â‚¬Å“odomÃ¢â‚¬.
@@ -57,7 +57,7 @@ TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 1 --default 19
 TRAJECTORY_BUILDER_2D.min_range = 0.41
 TRAJECTORY_BUILDER_2D.submaps.grid_options_2d.resolution=0.05 -- default 0.05
 TRAJECTORY_BUILDER_2D.max_range = 10.
-TRAJECTORY_BUILDER_2D.missing_data_ray_length = 9.5
+TRAJECTORY_BUILDER_2D.missing_data_ray_length = 2.5
 TRAJECTORY_BUILDER_2D.voxel_filter_size = 0.025 --default: 0.025
 TRAJECTORY_BUILDER_2D.use_imu_data = false -- imu is kaputt
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false
@@ -71,8 +71,8 @@ TRAJECTORY_BUILDER_2D.adaptive_voxel_filter = {
 
 -- see for default values: trajectory_builder_2d.lua#L41
 -- ignores a scan if the estimated motion (by the scan matcher) is below these values
-TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(1.2) --Threshold above which range data is inserted based on rotational motion.
-TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters=0.5 --default 0.2
+TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(1.0) --Threshold above which range data is inserted based on rotational motion.
+TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters=0.02 --default 0.2
 
 -- weight on the pose extrapolation as prior input to ceres scan matcher
 -- TRAJECTORY_BUILDER_2D.ceres_scan_matcher.occupied_space_weight=20. --default 20
@@ -91,15 +91,15 @@ TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.range_data_inserter_type="TSDF
 -- TRAJECTORY_BUILDER_2D.collate_landmarks = false  -- if landmarks are used, set this to false
 
 -- if probability grid was used to store data
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.hit_probability=0.75
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.miss_probability=0.49
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.hit_probability=0.65
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.miss_probability=0.35
 TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.probability_grid_range_data_inserter.insert_free_space=true
 
 -- if tsdf is used to store the submap data
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.truncation_distance=0.40 --default 0.3
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.truncation_distance=0.35 --default 0.3
 TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.update_free_space=true --default false
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.project_sdf_distance_to_scan_normal=true --true -- default false
-TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.maximum_weight=2 --default 10
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.project_sdf_distance_to_scan_normal=true -- default false
+TRAJECTORY_BUILDER_2D.submaps.range_data_inserter.tsdf_range_data_inserter.maximum_weight=3 --default 10
 -- pose graph options: 
 -- https://github.com/googlecartographer/cartographer/blob/master/configuration_files/pose_graph.lua
 
@@ -111,8 +111,8 @@ POSE_GRAPH.optimize_every_n_nodes = 3 --2.
 --   min_added_submaps_count = 5 --default 5
 -- }
 
-POSE_GRAPH.global_sampling_ratio = 0.003 -- 0.0 means loop closing is disabled
-POSE_GRAPH.global_constraint_search_after_n_seconds=1e10 --e29 -- deactivated default 10
+POSE_GRAPH.global_sampling_ratio = 0.0 -- 0.0 means loop closing is disabled
+POSE_GRAPH.global_constraint_search_after_n_seconds=3 --e29 -- deactivated default 10
 
 
 -- how much do we trust the odometry?
@@ -127,14 +127,12 @@ POSE_GRAPH.constraint_builder.fast_correlative_scan_matcher.angular_search_windo
 POSE_GRAPH.matcher_translation_weight=5e2 --default 5e2
 POSE_GRAPH.matcher_rotation_weight=1.6e3  -- default 1.6e3
 
-POSE_GRAPH.constraint_builder.sampling_ratio=0.03 -- 0.3 default
+POSE_GRAPH.constraint_builder.sampling_ratio=0.3 -- 0.3 default
 POSE_GRAPH.constraint_builder.max_constraint_distance=3.0 --default 15 Threshold for poses to be considered near a submap.
-POSE_GRAPH.constraint_builder.min_score=0.9 --default 0.55 Threshold for the scan match score below which a match is not considered. Low scores indicate that the scan and map do not look similar.
-
--- loop closing
-POSE_GRAPH.constraint_builder.global_localization_min_score=0.74 -- default 0.65
-POSE_GRAPH.constraint_builder.loop_closure_translation_weight=1e9 --e7 -- default 1.1e4
-POSE_GRAPH.constraint_builder.loop_closure_rotation_weight=1e9 --default 1e5
+POSE_GRAPH.constraint_builder.min_score=0.9985 --default 0.55 Threshold for the scan match score below which a match is not considered. Low scores indicate that the scan and map do not look similar.
+POSE_GRAPH.constraint_builder.global_localization_min_score=0.99 -- default 0.65
+POSE_GRAPH.constraint_builder.loop_closure_translation_weight=1e11 --e7 -- default 1.1e4
+POSE_GRAPH.constraint_builder.loop_closure_rotation_weight=1e11 --default 1e5
 POSE_GRAPH.constraint_builder.log_matches=true
 
 
