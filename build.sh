@@ -2,11 +2,17 @@
 
 
 
-echo "Building cartographer"
-sleep 1
+echo "Shall I build cartographer? [y/n]"
+printf "[y]:"
+read build_cartographer
+if [ "$build_cartographer" == "" ]; then
+
+	build_cartographer="y"
+fi
 
 
-echo "Shall I also build the gazebo simulator? [y/n]"
+
+echo "Shall I build the gazebo simulator? [y/n]"
 printf "[y]:"
 read build_simulator
 if [ "$build_simulator" == "" ]; then
@@ -14,7 +20,7 @@ if [ "$build_simulator" == "" ]; then
 	build_simulator="y"
 fi
 
-if [[ $build_simulator = "y" ]]
+if [[ $build_cartographer = "y" ]]
 then
 	echo "Delete existing cartographer_ros if exists?[y/n]"
 	printf "[y]:"
@@ -27,7 +33,7 @@ then
 	git clone https://github.com/googlecartographer/cartographer_ros.git 
 	cd ./cartographer_ros
 	#git checkout extrapolation_into_past_issue
-	docker build -t slam_kinetic -f Dockerfile.kinetic .
+	docker build -t intuitiv_slam -f Dockerfile.kinetic .
 	cd ..
 
     
