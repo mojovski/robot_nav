@@ -9,7 +9,7 @@ services:
         context: ..
         network: host
         dockerfile: docker/Dockerfile.robot_simulator
-    container_name: robot_simulator
+    container_name: intuitiv_robot_simulator
     network_mode: "host"
     volumes: #for hot editing of configuration files
         - ./robot_simulator/launch/:/root/catkin_ws/src/robot_simulator/launch/

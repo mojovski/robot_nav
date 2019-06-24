@@ -32,12 +32,26 @@ docker-compose --version
 ```
 
 
-## Run a test
+## Run a test with an existing bag file
+
+
+
+* Create a map using the test for mapping:
+```sh
+sudo echo "172.17.0.1	local" >> /etc/hosts
+cp envs/local .env 
+source .env
+docker-compose -f docker-compose/core.yml -f docker-compose/slam.yml up 
+docker exec -it intuitiv_ros_core bash -c 'source /opt/ros/kinetic/setup.bash;rosbag play -r 1.0 --clock /bags/some_record.bag'
+```
+
+You can also execute these steps with the predefined test "mapping" via calling:
 
 ```sh
 cd tests
 python run-test --testdir mapping
 ```
+
 
 Then start rviz on your host machine (prefer to use predefined confg file):
 ```sh
@@ -45,11 +59,14 @@ rviz -d ./ros_modules/config_node/configuration_files/simple_vis.rviz
 ```
 
 
-## Run the cartographer with your own bag
+## Running with Gazebo
 
+
+
+* Create a map using the test for mapping:
 ```sh
-cp envs/local .env
+sudo echo "172.17.0.1	local" >> /etc/hosts
+cp envs/gazebo .env 
 source .env
-docker-compose -f docker-compose/core.yml -f docker-compose/slam.yml up
-rosbag play -r <filepath>
+docker-compose -f docker-compose/core.yml -f docker-compose/slam.yml -f docker-compose/gazebo.yml up 
 ```

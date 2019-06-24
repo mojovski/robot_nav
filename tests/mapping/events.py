@@ -22,19 +22,10 @@ def callCmd(cmd):
 	out=p.stdout.read()
 	return out
 
-def getCurrentUptime():
-	cmd_uptime="docker exec -it ros_core rostopic echo /hardware_status -n 1 | grep uptime"
-	out=callCmd(cmd_uptime)
-	uptime=float(re.findall(r': (.+)\r',out)[0])
-	print("Uptime: "+str(uptime))
-	return uptime
 
 def getCurrentRobotPosition():
 	#todo
-	cmd="docker exec -it xxx ./src/xxx/scripts/cmd_get_robot_pose.py map base_link"
-	json_str=callCmd(cmd)
-	pose=json.loads(json_str)
-	return np.array(pose['t'])
+	return np.array([0,0,0])
 
 
 def onBeforeStart(**kwargs):
@@ -48,19 +39,6 @@ def onRun(container):
 	if container==None:
 		raise Exception("The mapping.onRun requires an instance of a container as parameter. Please recheck!")
 
-
-	#todo check and compare the robot pose
-	uptime=0.0
-
-	#remeber the first landmark
-	#print("Waiting to check some stuff at time 221")
-	#while uptime<221:
-	#	time.sleep(1)
-	#	uptime=getCurrentUptime()
-	
-	#todo: check now at time 221
-
-	#print("Exiting onRun")
 	return
 
 

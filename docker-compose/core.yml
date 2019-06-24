@@ -9,7 +9,7 @@ services:
       context: ..
       network: host
       dockerfile: docker/Dockerfile.cloud_simple
-    container_name: ros_core
+    container_name: intuitiv_ros_core
     network_mode: "host"
     volumes:
       - ../ros_modules/config_node/:/root/catkin_ws/src/config_node/

@@ -8,12 +8,12 @@ version: '3.4'
 services:
 
   slam:
-    image: slam_cartographer:latest
+    image: slam_kinetic:latest
     build:
       context: ..
       network: host
       dockerfile: ./docker/Dockerfile.slam
-    container_name: slam
+    container_name: intuitiv_slam
     network_mode: "host"
     security_opt:
       - seccomp:unconfined
@@ -31,4 +31,4 @@ services:
       - ROS_MASTER_URI=${ROS_MASTER_URI}
       - ROS_HOSTNAME=${ROS_HOSTNAME}
     #start the mapping by default
-    command: bash -c 'source /opt/cartographer_ros/setup.bash && sleep 5 && roslaunch --wait config_node lidar_2d_mapping.launch '
+    command: bash -c 'source /opt/cartographer_ros/setup.bash && sleep 5 && roslaunch --wait config_node lidar_2d_localize.launch '

@@ -16,7 +16,7 @@ include "trajectory_builder.lua"
 options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
-  map_frame = "map", --    The ROS frame ID to use for publishing submaps, the parent frame of poses, usually Ã¢â‚¬Å“mapÃ¢â‚¬.
+  map_frame = "map", -- The ROS frame ID to use for publishing submaps, the parent frame of poses, usually Ã¢â‚¬Å“mapÃ¢â‚¬.
   tracking_frame = "imu_link", --imu_link works with gazebo. The ROS frame ID of the frame that is tracked by the SLAM algorithm. If an IMU is used, it should be at its position, although it might be rotated. A common choice is Ã¢â‚¬Å“imu_linkÃ¢â‚¬.
   published_frame = "odom", -- odom worked, base_link would be same as in the backpack_2d.lua example. The ROS frame ID to use as the child frame for publishing poses. For example Ã¢â‚¬Å“odomÃ¢â‚¬ if an Ã¢â‚¬Å“odomÃ¢â‚¬ frame is supplied by a different part of the system. In this case the pose of Ã¢â‚¬Å“odomÃ¢â‚¬ in the map_frame will be published. Otherwise, setting it to Ã¢â‚¬Å“base_linkÃ¢â‚¬ is likely appropriate.
   odom_frame = "odom_augmented", --Only used if provide_odom_frame is true. The frame between published_frame and map_frame to be used for publishing the (non-loop-closed) local SLAM result. Usually Ã¢â‚¬Å“odomÃ¢â‚¬.

@@ -6,7 +6,7 @@ echo "Building cartographer"
 sleep 1
 
 
-echo "Shall I also build the ceff_simulator? [y/n]"
+echo "Shall I also build the gazebo simulator? [y/n]"
 printf "[y]:"
 read build_simulator
 if [ "$build_simulator" == "" ]; then
@@ -24,7 +24,6 @@ then
 	    rm -rf ./cartographer_ros
 	fi	
 
-	#git clone https://github.com/mojovski/cartographer_ros.git /tmp/cartographer_ros
 	git clone https://github.com/googlecartographer/cartographer_ros.git 
 	cd ./cartographer_ros
 	#git checkout extrapolation_into_past_issue
